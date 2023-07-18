@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">SimpleRoomApp</string>
+    <string name="create_post_button">Create post button</string>
+</resources>
