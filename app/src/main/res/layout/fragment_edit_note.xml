@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/background_img"
     android:orientation="vertical">
 
@@ -39,8 +40,35 @@
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.cardview.widget.CardView>
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
 
+    </androidx.appcompat.widget.LinearLayoutCompat>
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="12dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/card_note">
+
+        <CheckBox
+            android:id="@+id/checkbox_reminder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:textSize="20sp"
+            android:text="Set a reminder?" />
+
+        <TextView
+            android:id="@+id/reminder_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pick a time"
+            android:visibility="gone"
+            android:textSize="18sp"
+            tools:visibility="visible" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="0dp"

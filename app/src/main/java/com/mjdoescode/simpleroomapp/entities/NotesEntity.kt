@@ -8,6 +8,7 @@ class NotesEntity(
     @PrimaryKey(autoGenerate = true)
     val noteId: Int = 0,
     var noteContent: String,
+    var noteReminderTime: String,
     val noteTimeStamp: String
 ) {
 }

@@ -1,4 +1,4 @@
 package com.mjdoescode.simpleroomapp.models
 
-class NoteModel(private val noteId: Int, private val noteContent: String) {
+data class NoteModel(private val noteId: Int, private val noteContent: String) {
 }

@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.mjdoescode.simpleroomapp.R
@@ -51,7 +52,7 @@ class EditNoteFragment : Fragment() {
         val editText = binding.content
         val maxNewLines = 12
 
-        val inputFilter = arrayOf<InputFilter>(
+        val inputFilter = arrayOf(
             InputFilter.LengthFilter(Integer.MAX_VALUE),
             EditTextLimitHelper(maxNewLines)
         )
@@ -62,18 +63,30 @@ class EditNoteFragment : Fragment() {
         binding.update.setOnClickListener {
             updatePost()
         }
+
     }
     private fun getNote() {
         lifecycleScope.launch {
             try {
                 appDao.getNoteById(noteId!!).collect { note ->
                     binding.content.setText(note.noteContent)
-                }
+                        if (note.noteReminderTime != ""){
+                            binding.checkboxReminder.isChecked = true
+                        } else {
+                            binding.reminderTime.isVisible = true
+                            binding.reminderTime.text = "No reminder time was set!"
+                        }
+                    }
             } catch (e: IllegalAccessError) {
                 Log.e("NOTEID", "getNote: ${IllegalAccessError()}")
             }
         }
     }
+
+    private fun showEditReminderTime(show: Boolean, note: NotesEntity) {
+
+    }
+
 
     private fun updatePost() {
         val content = binding.content.text.toString()

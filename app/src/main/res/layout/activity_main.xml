@@ -27,10 +27,4 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="20dp"/>
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:id="@+id/notify"/>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,11 +4,8 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
-import android.os.Build
+import android.os.*
 import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -22,6 +19,9 @@ import com.mjdoescode.simpleroomapp.R
 import com.mjdoescode.simpleroomapp.databinding.ActivityMainBinding
 import com.mjdoescode.simpleroomapp.fragments.CreateNoteFragment
 import com.mjdoescode.simpleroomapp.fragments.MainFragment
+import com.mjdoescode.simpleroomapp.utils.NotificationReceiver
+import com.mjdoescode.simpleroomapp.utils.ReminderManager
+import com.mjdoescode.simpleroomapp.utils.ReminderNotificationService
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -33,30 +33,23 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setupToolbar()
 
-        binding.notify.setOnClickListener {
-            Handler(Looper.getMainLooper()).postDelayed({
-                (application as MyRoomApp).showNotification(this)
-            }, 10000)
-        }
     }
+
 
     private fun setupToolbar() {
         setSupportActionBar(binding.toolbar)
     }
 
     override fun onBackPressed() {
-        if (canGoBack){
+        if (canGoBack) {
             onBackPressedDispatcher.onBackPressed()
         } else {
             Toast.makeText(this, "Press back again to close the app.", Toast.LENGTH_SHORT).show()
         }
     }
 
-    fun canGoBack(canGoBack: Boolean){
+    fun canGoBack(canGoBack: Boolean) {
         this.canGoBack = canGoBack
     }
 
-    companion object {
-        const val CHANNEL_ID = "my_channel_id"
-    }
 }

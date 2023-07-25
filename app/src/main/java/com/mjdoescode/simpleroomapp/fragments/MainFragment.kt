@@ -2,12 +2,17 @@ package com.mjdoescode.simpleroomapp.fragments
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.mjdoescode.simpleroomapp.MyRoomApp
 import com.mjdoescode.simpleroomapp.R
 import com.mjdoescode.simpleroomapp.adapters.NotesAdapter
 import com.mjdoescode.simpleroomapp.dao.AppDao
@@ -16,6 +21,7 @@ import com.mjdoescode.simpleroomapp.databinding.FragmentMainBinding
 import com.mjdoescode.simpleroomapp.entities.NotesEntity
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.lang.Thread.State
 
 class MainFragment : Fragment() {
 
