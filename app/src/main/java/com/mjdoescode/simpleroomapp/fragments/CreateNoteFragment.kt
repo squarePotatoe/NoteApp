@@ -1,6 +1,9 @@
 package com.mjdoescode.simpleroomapp.fragments
 
 import android.annotation.SuppressLint
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -19,11 +22,17 @@ import com.mjdoescode.simpleroomapp.dao.AppDao
 import com.mjdoescode.simpleroomapp.database.AppDatabase
 import com.mjdoescode.simpleroomapp.databinding.FragmentCreateNoteBinding
 import com.mjdoescode.simpleroomapp.entities.NotesEntity
+import com.mjdoescode.simpleroomapp.models.Reminder
 import com.mjdoescode.simpleroomapp.utils.Configs.NOTIFICATION_CONTENT
 import com.mjdoescode.simpleroomapp.utils.EditTextLimitHelper
 import com.mjdoescode.simpleroomapp.utils.ReminderManager
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.Year
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class CreateNoteFragment : Fragment() {
@@ -32,11 +41,15 @@ class CreateNoteFragment : Fragment() {
     private lateinit var appDatabase: AppDatabase
     private lateinit var appDao: AppDao
 
+    private lateinit var calendar: Calendar
 
     private var content = ""
     private var noteDate = ""
     private var noteReminderTime = ""
     private var noteId = 0
+
+    private var selectedDate: LocalDateTime? = null
+    private var selectedTime: LocalDateTime? = null
 
     private lateinit var reminderManager: ReminderManager
 
@@ -53,11 +66,24 @@ class CreateNoteFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         appDatabase = AppDatabase.getInstance(requireContext())
         appDao = appDatabase.appDao()
+        calendar = Calendar.getInstance()
+        reminderManager = ReminderManager(requireContext())
 
-        setupClickListeners()
         setupNoteDate()
 
-        reminderManager = ReminderManager(requireContext())
+        setupClickListeners()
+
+        setNoteMaxLines()
+    }
+
+    private fun setupClickListeners() {
+        binding.buttonSave.setOnClickListener {
+            createPost()
+            exitFragmentAfterUpdate()
+        }
+        binding.buttonBack.setOnClickListener {
+            exitFragmentAfterUpdate()
+        }
 
         binding.checkboxReminder.setOnCheckedChangeListener { _, isChecked ->
             binding.reminderTime.isVisible = isChecked
@@ -67,45 +93,54 @@ class CreateNoteFragment : Fragment() {
             setupReminder()
         }
 
-        setNoteMaxLines()
     }
 
     private fun setupReminder() {
+        val currentDate = LocalDateTime.now()
 
-        val timePicker: MaterialTimePicker = MaterialTimePicker.Builder()
-                .setTimeFormat(TimeFormat.CLOCK_12H)
-                .setHour(12)
-                .setMinute(0)
-                .setTitleText("Select time: ")
-                .build()
+        val datePickerDialog = DatePickerDialog(
+            requireContext(),
+            { _, year, month, dayOfMonth ->
+                selectedDate = LocalDateTime.of(year, month, dayOfMonth, 0, 0)
+                showTimePicker()
+            },
+            currentDate.year,
+            currentDate.monthValue,
+            currentDate.dayOfMonth
+        )
 
-            timePicker.show(parentFragmentManager, "Reminder")
+        datePickerDialog.datePicker.minDate =
+            currentDate.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 
-            Log.e("TAG", "setupReminder: $timePicker")
+        datePickerDialog.show()
 
-            timePicker.addOnPositiveButtonClickListener {
-                if (timePicker.hour > 12) {
-                    binding.reminderTime.text =
-                        String.format("%02d", timePicker.hour - 12) + " : " +
-                                String.format("%02d", timePicker.minute) + "PM"
-                } else {
-                    String.format("%02d", timePicker.hour) + " : " + String.format(
-                        "%02d",
-                        timePicker.minute
-                    ) + "AM"
-                }
+    }
 
-                val calendar = Calendar.getInstance()
-                calendar[Calendar.HOUR_OF_DAY] = timePicker.hour
-                calendar[Calendar.MINUTE] = timePicker.minute
-                calendar[Calendar.SECOND] = 0
-                calendar[Calendar.MILLISECOND] = 0
+    private fun showTimePicker() {
+        val currentTime = LocalDateTime.now()
 
-                noteReminderTime = String.format("%02d:%02d", timePicker.hour, timePicker.minute)
+        val timePickerDialog = TimePickerDialog(
+            requireContext(),
+            { _, hourOfDay, minute ->
+                selectedTime = LocalDateTime.of(
+                    selectedDate!!.year,
+                    selectedDate!!.month,
+                    selectedDate!!.dayOfMonth,
+                    hourOfDay,
+                    minute
+                )
+                binding.reminderTime.text =
+                    selectedTime!!.format(DateTimeFormatter.ofPattern("hh:mm"))
 
-                reminderManager.setReminder(calendar.timeInMillis)
-                NOTIFICATION_CONTENT = content
-            }
+                val reminder = Reminder(content, selectedTime!!)
+                reminderManager.schedule(reminder)
+            },
+            currentTime.hour,
+            currentTime.minute,
+            false
+        )
+
+        timePickerDialog.show()
     }
 
     private fun setNoteMaxLines() {
@@ -124,16 +159,6 @@ class CreateNoteFragment : Fragment() {
         val calendar = Calendar.getInstance()
         val sdf = SimpleDateFormat("HH:mm dd/MMMM", Locale.getDefault())
         noteDate = sdf.format(calendar.time)
-    }
-
-    private fun setupClickListeners() {
-        binding.buttonSave.setOnClickListener {
-            createPost()
-            exitFragmentAfterUpdate()
-        }
-        binding.buttonBack.setOnClickListener {
-            exitFragmentAfterUpdate()
-        }
     }
 
     private fun exitFragmentAfterUpdate() {

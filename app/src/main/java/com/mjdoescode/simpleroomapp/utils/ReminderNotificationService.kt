@@ -9,6 +9,7 @@ import android.os.VibrationEffect
 import androidx.core.app.NotificationCompat
 import com.mjdoescode.simpleroomapp.R
 import com.mjdoescode.simpleroomapp.activities.MainActivity
+import com.mjdoescode.simpleroomapp.fragments.CreateNoteFragment
 import com.mjdoescode.simpleroomapp.fragments.EditNoteFragment
 import com.mjdoescode.simpleroomapp.fragments.MainFragment
 import com.mjdoescode.simpleroomapp.utils.Configs.NOTIFICATION_CONTENT
@@ -20,7 +21,7 @@ class ReminderNotificationService(
     private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     fun showNotification() {
-        val activityIntent = Intent(context, MainActivity::class.java)
+        val activityIntent = Intent(context, CreateNoteFragment::class.java)
         val activityPendingIntent = PendingIntent.getActivity(
             context,
             1,
@@ -34,8 +35,8 @@ class ReminderNotificationService(
             .setContentTitle(NOTIFICATION_TITLE)
             .setContentText(NOTIFICATION_CONTENT)
             .setAutoCancel(true)
-            .setContentIntent(activityPendingIntent)
             .setVibrate(defaultVibratePattern)
+            .setContentIntent(activityPendingIntent)
             .build()
 
         notificationManager.notify(

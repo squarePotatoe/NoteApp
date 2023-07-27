@@ -60,4 +60,7 @@ dependencies {
 
     // Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1"
+
+    //Dexter - permission handling
+    implementation 'com.karumi:dexter:6.2.3'
 }
