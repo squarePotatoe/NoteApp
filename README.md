@@ -1,2 +1,2 @@
 # NoteApp
-Simple Note taking app with local Room database
+Simple Note taking app with local Room database and notifications
