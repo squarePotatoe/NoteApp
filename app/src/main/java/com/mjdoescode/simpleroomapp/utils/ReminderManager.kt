@@ -29,7 +29,9 @@ class ReminderManager(private val context: Context): AlarmScheduler {
     }
 
     override fun schedule(item: Reminder) {
-        val alarmIntent = Intent(context, NotificationReceiver::class.java)
+        val alarmIntent = Intent(context, NotificationReceiver::class.java).apply {
+            putExtra("noteContent", item.content)
+        }
         val pendingIntent = PendingIntent.getBroadcast(
             context,
             item.hashCode(),
@@ -42,6 +44,20 @@ class ReminderManager(private val context: Context): AlarmScheduler {
             item.dateTime.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,
             pendingIntent
         )
+//
+//        val interval = AlarmManager.INTERVAL_DAY
+//        val triggerAtMillis = item.dateTime.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000
+//
+//        alarmManager.setRepeating(
+//            AlarmManager.RTC_WAKEUP,
+//            triggerAtMillis,
+//            interval,
+//            pendingIntent
+//        )
+    }
+
+    private fun calculateIntervalMillis(item: Reminder): Long {
+        return 24 * 60 * 60 * 1000
     }
 
     override fun cancel(item: Reminder) {

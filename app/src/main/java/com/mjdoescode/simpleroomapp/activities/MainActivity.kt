@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.*
 import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -16,12 +17,18 @@ import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.mjdoescode.simpleroomapp.databinding.ActivityMainBinding
+import com.mjdoescode.simpleroomapp.fragments.EditNoteFragment
+import com.mjdoescode.simpleroomapp.utils.NotificationReceiver
+import com.mjdoescode.simpleroomapp.utils.ReminderManager
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var noteColor: CardView? = null
     private var canGoBack = true
+
+    private lateinit var reminderManager: ReminderManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -29,6 +36,15 @@ class MainActivity : AppCompatActivity() {
         setupToolbar()
 
         setupPermissions()
+        launchEditNoteFromNotification()
+
+    }
+
+    private fun launchEditNoteFromNotification() {
+        val noteId = intent.getIntExtra("noteId", 0)
+        if (noteId == 0){
+            Log.e("AN NOTE", "launchEditNoteFromNotification: $noteId", )
+        }
     }
 
     private fun setupPermissions() {

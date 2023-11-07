@@ -42,6 +42,7 @@ class EditNoteFragment : Fragment() {
         appDao = appDatabase.appDao()
 
         noteId = arguments?.getInt("noteId") ?: return
+        Log.e("TAG", "onViewCreated: $noteId", )
 
         setupClickListeners()
 
@@ -82,11 +83,6 @@ class EditNoteFragment : Fragment() {
             }
         }
     }
-
-    private fun showEditReminderTime(show: Boolean, note: NotesEntity) {
-
-    }
-
 
     private fun updatePost() {
         val content = binding.content.text.toString()

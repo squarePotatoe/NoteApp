@@ -6,8 +6,8 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import com.mjdoescode.simpleroomapp.database.AppDatabase
+import com.mjdoescode.simpleroomapp.utils.Constants.CHANNEL_ID
 import com.mjdoescode.simpleroomapp.utils.ReminderNotificationService.Companion.CHANNEL_DESCRIPTION
-import com.mjdoescode.simpleroomapp.utils.ReminderNotificationService.Companion.CHANNEL_ID
 import com.mjdoescode.simpleroomapp.utils.ReminderNotificationService.Companion.CHANNEL_NAME
 
 class MyRoomApp: Application() {
@@ -22,17 +22,15 @@ class MyRoomApp: Application() {
     }
 
     private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            val channel = NotificationChannel(
-                CHANNEL_ID,
-                CHANNEL_NAME,
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
-            channel.description = CHANNEL_DESCRIPTION
+        val channel = NotificationChannel(
+            CHANNEL_ID,
+            CHANNEL_NAME,
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+        channel.description = CHANNEL_DESCRIPTION
 
-            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-        }
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
     }
 
 

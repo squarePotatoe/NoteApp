@@ -92,6 +92,7 @@ class MainFragment : Fragment() {
                             lifecycleScope.launch {
                                 appDao.deleteNoteAtId(note.noteId)
                                 val position = notesAdapter.getPositionOfNote(note)
+
                                 notesAdapter.removeNoteAtPosition(position)
                             }
                         }
